@@ -18,6 +18,7 @@ public class Main
 {
     public static void main(String[] args) throws URISyntaxException, IOException, ParseException
     {
-        JsonUtil.distribute();
+        Bot bot = new Bot();
+        bot.createBot(args);
     }
 }

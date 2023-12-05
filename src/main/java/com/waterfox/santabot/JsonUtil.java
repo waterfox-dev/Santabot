@@ -62,7 +62,8 @@ public class JsonUtil
     public static void addUser(long id)
     {
         JSONObject d = JsonUtil.load();
-        if(!d.containsKey(id))
+        assert d != null;
+        if(!d.containsKey(String.valueOf(id)))
         {
             JSONObject uObject = new JSONObject();
             uObject.put("message", "");
@@ -98,4 +99,12 @@ public class JsonUtil
         }
         JsonUtil.write(d);
     }
+
+    public static long getSecret(long id)
+    {
+        JSONObject d = JsonUtil.load();
+        JSONObject t = (JSONObject) d.get(String.valueOf(id));
+        return Long.parseLong((String) t.get("target"));
+    }
+
 }

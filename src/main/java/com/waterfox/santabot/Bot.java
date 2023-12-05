@@ -1,6 +1,7 @@
 package com.waterfox.santabot;
 
 import com.waterfox.santabot.command.CommandLoader;
+import com.waterfox.santabot.command.GetSecretCommand;
 import com.waterfox.santabot.command.LaunchCommand;
 import com.waterfox.santabot.command.PingCommand;
 import net.dv8tion.jda.api.JDA;
@@ -17,6 +18,7 @@ public class Bot extends ListenerAdapter
     public static JDA jda;
     public static JDABuilder jdaBuilder;
     public static long owner = 669530329299550218L;
+    public static BotState state = BotState.SIGNING;
 
     public void createBot(String[] args)
     {
@@ -54,7 +56,19 @@ public class Bot extends ListenerAdapter
         switch (event.getName())
         {
             case "ping" -> new PingCommand().execute(event);
+            case "getsecret" ->
+            {
+                if (state != BotState.SIGNING)
+                {
+                    new GetSecretCommand().execute(event);
+                }
+                else
+                {
+                    event.reply("Les secrets santas n'ont toujours pas été distribué").queue();
+                }
+            }
         }
+
     }
 
     @Override
@@ -62,10 +76,25 @@ public class Bot extends ListenerAdapter
     {
         if (Bot.owner == event.getAuthor().getIdLong())
         {
-            System.out.println(event.getMessage().getContentRaw());
             if (event.getMessage().getContentRaw().equals("//launch"))
             {
                 new LaunchCommand().execute(event);
+            }
+            if (event.getMessage().getContentRaw().equals("//signing"))
+            {
+                state = BotState.SIGNING;
+            }
+            if (event.getMessage().getContentRaw().equals("//writing"))
+            {
+                state = BotState.WRITING;
+            }
+            if (event.getMessage().getContentRaw().equals("//gifting"))
+            {
+                state = BotState.GIFTING;
+            }
+            if (event.getMessage().getContentRaw().equals("//dstrtarget"))
+            {
+                JsonUtil.distribute();
             }
         }
     }
@@ -75,9 +104,16 @@ public class Bot extends ListenerAdapter
     {
         if (event.getComponentId().equals("login"))
         {
-            event.deferEdit().queue();
-            event.getUser().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("Inscription bien enregistrée :white_check_mark: ")).queue();
-            JsonUtil.addUser(event.getUser().getIdLong());
+            if(state == BotState.SIGNING)
+            {
+                event.deferEdit().queue();
+                event.getUser().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage("Inscription bien enregistrée :white_check_mark: ")).queue();
+                JsonUtil.addUser(event.getUser().getIdLong());
+            }
+            else
+            {
+                event.reply("L'inscription au SantaBot est déjà passée.").queue();
+            }
         }
     }
 }
