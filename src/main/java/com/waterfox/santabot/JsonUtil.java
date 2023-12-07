@@ -68,6 +68,7 @@ public class JsonUtil
             JSONObject uObject = new JSONObject();
             uObject.put("message", "");
             uObject.put("target", "");
+            uObject.put("file", "");
             d.put(id, uObject);
         }
         JsonUtil.write(d);
@@ -107,4 +108,19 @@ public class JsonUtil
         return Long.parseLong((String) t.get("target"));
     }
 
+    public static void writeMessage(long id, String content)
+    {
+        JSONObject d = JsonUtil.load();
+        JSONObject t = (JSONObject) d.get(String.valueOf(id));
+        t.put("message", content);
+        JsonUtil.write(d);
+    }
+
+    public static void writeFile(long id, String url)
+    {
+        JSONObject d = JsonUtil.load();
+        JSONObject t = (JSONObject) d.get(String.valueOf(id));
+        t.put("file", url);
+        JsonUtil.write(d);
+    }
 }

@@ -1,9 +1,6 @@
 package com.waterfox.santabot;
 
-import com.waterfox.santabot.command.CommandLoader;
-import com.waterfox.santabot.command.GetSecretCommand;
-import com.waterfox.santabot.command.LaunchCommand;
-import com.waterfox.santabot.command.PingCommand;
+import com.waterfox.santabot.command.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -65,6 +62,17 @@ public class Bot extends ListenerAdapter
                 else
                 {
                     event.reply("Les secrets santas n'ont toujours pas été distribué").queue();
+                }
+            }
+            case "writesecret" ->
+            {
+                if (state == BotState.WRITING)
+                {
+                    new WriteSecretCommand().execute(event);
+                }
+                else
+                {
+                    event.reply("L'écriture de message est actuellement verrouillée");
                 }
             }
         }
