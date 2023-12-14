@@ -72,7 +72,18 @@ public class Bot extends ListenerAdapter
                 }
                 else
                 {
-                    event.reply("L'écriture de message est actuellement verrouillée");
+                    event.reply("L'écriture de message est actuellement verrouillée").queue();
+                }
+            }
+            case "updatesecret" ->
+            {
+                if (state == BotState.WRITING)
+                {
+                    new UpdateSecretCommand().execute(event);
+                }
+                else
+                {
+                    event.reply("La mise à jour de message est actuellement verrouillée").queue();
                 }
             }
         }
@@ -104,6 +115,10 @@ public class Bot extends ListenerAdapter
             {
                 JsonUtil.distribute();
             }
+            if (event.getMessage().getContentRaw().equals("//gift"))
+            {
+                new GiftCommand().execute(event);
+            }
         }
     }
 
@@ -121,6 +136,24 @@ public class Bot extends ListenerAdapter
             else
             {
                 event.reply("L'inscription au SantaBot est déjà passée.").queue();
+            }
+        }
+
+        if(event.getComponentId().equals("update"))
+        {
+            event.reply("Pour mettre à jour votre message, la commande /write suffit ;)").queue();
+        }
+
+        if(event.getComponentId().equals("getgift"))
+        {
+            if(state == BotState.GIFTING)
+            {
+                event.deferEdit().queue();
+                event.getUser().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage(JsonUtil.getSecretMessage(event.getUser().getIdLong()))).queue();
+                if(JsonUtil.getSecretFile(event.getUser().getIdLong()) != null)
+                {
+                    event.getUser().openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage(JsonUtil.getSecretFile(event.getUser().getIdLong()))).queue();
+                }
             }
         }
     }

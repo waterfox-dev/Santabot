@@ -123,4 +123,57 @@ public class JsonUtil
         t.put("file", url);
         JsonUtil.write(d);
     }
+
+    public static String getMessage(long id)
+    {
+        JSONObject d = JsonUtil.load();
+        JSONObject t = (JSONObject) d.get(String.valueOf(id));
+        return (String) t.get("message");
+    }
+
+    public static String getFile(long id)
+    {
+        JSONObject d = JsonUtil.load();
+        JSONObject t = (JSONObject) d.get(String.valueOf(id));
+        if( (String) t.get("file") == "")
+        {
+            return null;
+        }
+        else
+        {
+            return (String) t.get("file");
+        }
+    }
+
+    public static String getSecretMessage(long id)
+    {
+        JSONObject d = JsonUtil.load();
+        assert d != null;
+        for(Object key : d.keySet())
+        {
+            JSONObject t = (JSONObject) d.get(String.valueOf(Long.parseLong((String) key)));
+            if(t.get("target").equals(String.valueOf(id)))
+            {
+                System.out.printf("%s - %s \n", t.get("target"), String.valueOf(id));
+                return getMessage(Long.parseLong((String) key));
+            }
+        }
+        return "Joyeux noël";
+    }
+
+    public static String getSecretFile(long id)
+    {
+        JSONObject d = JsonUtil.load();
+        assert d != null;
+        for(Object key : d.keySet())
+        {
+            JSONObject t = (JSONObject) d.get(String.valueOf(Long.parseLong((String) key)));
+            System.out.println(t.get("target"));
+            if(t.get("target").equals(String.valueOf(id)))
+            {
+                return getFile(Long.parseLong((String) key));
+            }
+        }
+        return null;
+    }
 }
