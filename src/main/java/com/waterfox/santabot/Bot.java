@@ -20,7 +20,7 @@ public class Bot extends ListenerAdapter
     public void createBot(String[] args)
     {
          Bot.jdaBuilder = JDABuilder.createDefault(
-                "MTA1MTQ5MzQxODkwMTE5Mjc0Ng.GhQllG._rLUDpkwv5h497K6Xl80JO77KaR6HD5T1T-_R4",
+                args[0],
                 GatewayIntent.DIRECT_MESSAGES,
                 GatewayIntent.MESSAGE_CONTENT,
                 GatewayIntent.GUILD_MESSAGES,
